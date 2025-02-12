@@ -37,6 +37,7 @@ STAGE = os.environ.get("STAGE")
 # bei ersten startup will man eigentlich einen Adminuser mit Adminpasswort erstellen... 
 ADMIN_PW = os.environ.get("ADMIN_PW")
 
+# app-factory
 def create_app():
     app = Flask(__name__)
     app.config[
@@ -51,6 +52,7 @@ def create_app():
     if PROXY_PATH_PREFIX:
         app.wsgi_app = ProxyFix(app.wsgi_app)
 
+    # Blueprint imports
     with app.app_context():
         from core.blueprints.root import root
         from core.blueprints.auth import auth
@@ -58,6 +60,7 @@ def create_app():
 
     login_manager.init_app(app)
 
+    # Register imported blueprints
     app.register_blueprint(root)
     app.register_blueprint(auth)
     app.register_blueprint(admin)
