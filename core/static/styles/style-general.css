@@ -1,0 +1,405 @@
+
+
+button:hover {
+  background: var(--button-hover-color);
+}
+
+a:hover {
+  background: var(--button-hover-color);
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  height: 100%;
+  background-image: var(--body-bg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: Helvetica, sans-serif;
+}
+
+.window {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  max-width: 960px;
+  margin: 25px 10px;
+  border: var(--border);
+  border-radius: 5px;
+  background: var(--msger-bg);
+  box-shadow: 0 15px 15px -5px rgba(0, 0, 0, 0.2);
+}
+h1 {
+  text-align: center;
+  padding: 40px;
+}
+h2 {
+  text-align: center;
+  padding: 10px;
+  padding-top:50px;
+}
+.window-header {
+  /* display: flex; */
+  font-size: medium;
+  justify-content: space-between;
+  padding: 10px;
+  text-align: center;
+  border-bottom: var(--border);
+  background: #eee;
+  color: #666;
+}
+
+.btn {
+  background-color: #04aa6d;
+  color: white;
+  cursor: pointer;
+  transition: background 0.23s;
+  text-decoration: none;
+  float: right;
+  border: none;
+  text-align: center;
+  margin: 10px;
+  border-radius: 3px;
+  padding: 10px;
+  width: 30%;
+}
+
+.del-btn {
+  background-color: #aa3604;
+  color: white;
+  cursor: pointer;
+  transition: background 0.23s;
+  text-decoration: none;
+  float: right;
+  border: none;
+  text-align: center;
+  margin: 10px;
+  border-radius: 3px;
+  padding: 10px;
+  width: 30%;
+}
+
+.btn:hover {
+  background-color: #015e3c;
+}
+
+.del-btn:hover {
+  background-color: #5e0a01;
+}
+
+.download-section {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+  align-items: center;
+}
+
+.task {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+.tasks {
+  display: flex;
+  flex-direction: column;
+}
+
+.tasks-update {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+}
+
+.tasks-form {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+}
+
+.task-order {
+  max-width: 5%;
+}
+
+.task-chatgpt {
+  max-width: 15%;
+}
+
+.task-enabled {
+  max-width: 15%;
+}
+.task-name {
+  max-width: 15%;
+  min-width: 15%;
+}
+.task-header {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  font-weight: bold;
+  align-items: center;
+}
+
+
+.user-name {
+  min-width: 20%;
+}
+
+.user-pw {
+  max-width: 25%;
+}
+.user-group {
+  min-width: 50%;
+}
+.user-header {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  font-weight: bold;
+  align-items: center;
+}
+
+.user-form {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  width: 400px;
+}
+
+.group-name {
+  min-width: 25%;
+}
+.group-activated {
+  min-width: 25%;
+}
+.group-header {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  font-weight: bold;
+  align-items: center;
+}
+
+.group-form {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+}
+
+.group {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  width: 200px;
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+button {
+  background: var(--button-bg-color);
+  color: var(--button-color);
+  cursor: pointer;
+  transition: 0.23s;
+  text-decoration: none;
+  border: none;
+  border-radius: 3px;
+  height: 30px;
+  margin: 5%;
+  margin-top:1%;
+  text-align: center;
+  padding-left: 6%;
+  padding-right: 6%;
+}
+
+
+form {
+  background-color: var(--form-bg-color);
+  width: 80%;
+  max-width: 1500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  margin: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.consent{
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 4%;
+}
+form[action="/intention"]{
+  padding-top: 4%;
+  width: 60%;
+}
+
+form[action="/login"]{
+  margin-top: 15%;
+}
+
+.login-form {
+  max-width: 30%;
+}
+
+
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: inline-block; /* Adjusted to inline-block */
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 0px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+  background-color: #eee;
+}
+
+
+input[type="radio"]  {
+  margin-right: 10px;
+}
+input[type="number"]  {
+  width: 70px;
+  height: 20px;
+}
+
+input[type="checkbox"]  {
+  margin-left: 8px;
+  margin-right: 10px;
+}
+
+p {
+  font-size: large;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 10px;
+}
+
+
+main {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+div {
+  margin: 10px;
+}
+
+.consent-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+p {
+  margin: 20px;
+}
+
+.text-highlight {
+  color: var(--text-highlight-color);
+}
+
+hr {
+  clear:both;
+  display:block;
+  width: 80%;               
+  background-color:gray;
+  height: 1px;
+}
+
+.intention {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  justify-content: center;
+  border-right: dashed #c9c8c8;
+
+}
+
+.usage-div {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  justify-content: center;
+  margin:0%;
+
+
+}
+li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+input[type="radio"] {
+  margin-right: 10px;
+}
+
+label {
+  flex: 1;
+  white-space: normal;
+}
+
+.intention-box {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom:0%;
+
+}

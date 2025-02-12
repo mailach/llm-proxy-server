@@ -1,0 +1,25 @@
+:root {
+    --body-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --msger-bg: #ffffff;
+    --sidebar-bg: hsl(0, 0%, 15%);
+    --border: 2px solid #ddd;
+    --button-bg-color: hsl(0, 0%, 15%);
+    --bot-color: #ffffff;
+    --chat-txt-color: #2f2f30;
+    --form-bg-color: #fff;
+    --user-color: #ffffff;
+    --button-color: hsl(0, 1%, 86%);
+    --spinner-color: var(--button-bg-color);
+    --button-padding: 14px 20px;
+    --button-hover-color: hsl(0, 0%, 56%);
+    --text-highlight-color: hsl(0, 0%, 0%);
+    --req-star-color: hsl(0, 100%, 50%);
+    --chat-width: 60vw;
+    --not-helpful-color: hsl(0, 45%, 54%) ;
+    --helpful-color:hsl(146, 45%, 53%);
+    --not-helpful-hover-color: hsl(0, 34%, 64%) ;
+    --helpful-hover-color:hsl(146, 36%, 62%);
+    --send-color:#9d658a;
+    --advice-box-color: #fdf5fd;
+    --advice-border-color: #e6dfe6;
+  }

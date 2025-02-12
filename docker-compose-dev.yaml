@@ -1,0 +1,36 @@
+services:
+  flask:
+    env_file:
+      - config/.env.dev
+    container_name: chatgp_flask
+    build: .
+    ports:
+      - "127.0.0.1:5123:5000"
+    networks:
+      - backend
+    environment:
+      - FLASK_APP=wsgi:app
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+    entrypoint:
+      ["/bin/sh", "-c", "chmod +x /app/init/init_app_dev.sh && /app/init/init_app_dev.sh"]
+  db:
+    env_file:
+      - config/.env.dev
+    container_name: chatgpt_pg
+    image: postgres
+    restart: always
+    expose:
+      - "5432"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$PGUSER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+networks:
+  backend:
