@@ -16,7 +16,7 @@ services:
     volumes:
       - ./:/app
     entrypoint:
-      ["/bin/sh", "-c", "chmod +x /app/init/init_app_dev.sh && /app/init/init_app_dev.sh"]
+      ["/bin/sh", "-c", "/app/init/init_app_dev.sh"]
   db:
     env_file:
       - config/.env.dev

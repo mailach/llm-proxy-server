@@ -34,8 +34,6 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 # Falls sachen nur in dev laufen sollen 
 STAGE = os.environ.get("STAGE")
 
-# bei ersten startup will man eigentlich einen Adminuser mit Adminpasswort erstellen... 
-ADMIN_PW = os.environ.get("ADMIN_PW")
 
 # app-factory
 def create_app():
@@ -54,6 +52,7 @@ def create_app():
 
     # Blueprint imports
     with app.app_context():
+        from core import models
         from core.blueprints.root import root
         from core.blueprints.auth import auth
         from core.blueprints.admin import admin
