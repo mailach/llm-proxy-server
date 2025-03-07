@@ -1,4 +1,3 @@
-version: "2.1"
 services:
   flask:
     env_file:
@@ -10,7 +9,7 @@ services:
     networks:
       - backend
     environment:
-      - SCRIPT_NAME=/sws-chatbot
+      - SCRIPT_NAME=/sws-llm-proxy
       - FLASK_APP=wsgi:app
     restart: always
     depends_on:

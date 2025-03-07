@@ -2,7 +2,7 @@ services:
   flask:
     env_file:
       - config/.env.dev
-    container_name: chatgp_flask
+    container_name: llm_proxy_flask
     build: .
     ports:
       - "127.0.0.1:5123:5000"
@@ -20,7 +20,7 @@ services:
   db:
     env_file:
       - config/.env.dev
-    container_name: chatgpt_pg
+    container_name: llm_proxy_postgres
     image: postgres
     restart: always
     expose:
