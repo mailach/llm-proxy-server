@@ -2,7 +2,7 @@ services:
   flask:
     env_file:
       - config/.env.prod
-    container_name: chatgp_flask
+    container_name: llm_proxy_flask
     build: .
     ports:
       - "5000:5000"
@@ -18,7 +18,7 @@ services:
   db:
     env_file:
       - config/.env.prod
-    container_name: chatgpt_pg
+    container_name: llm_proxy_postgres
     image: postgres
     volumes:
       - ./data:/var/lib/postgresql/data
