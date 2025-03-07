@@ -4,12 +4,12 @@ from functools import wraps
 import flask
 import flask_login
 
-
-# from werkzeug.security import check_password_hash <- eine Möglichkeit passwort hashes zu vergleichen
-
-# from core.models import User <- Import aller relevanter Datentypen
+from werkzeug.security import check_password_hash 
 
 from core import login_manager
+from core.models import User
+from core.forms import LoginForm
+
 
 auth = flask.Blueprint("auth", __name__)
 
@@ -24,29 +24,27 @@ def unauthorized_handler():
     return # flask.redirect(flask.url_for("auth.login", next=flask.request.endpoint)) <- Weiterleitung wenn auf unberechtigte Seite zugegriffen wird
 
 
-@auth.route("/login", methods=["GET", "POST"])
+
+
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
-    if flask.request.method == "GET":
-        return # flask.render_template("login.html") <- z.B wenn auf eine login page weitergeleitet werden soll
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        user = User.query.filter_by(id=username).first()
 
+        if not user or not check_password_hash(user.pw_hash, password):
+            flask.flash("Please check your login details and try again.", "danger")
+        else:
+            flask_login.login_user(user)
+            logging.info("Successful login %r", user)
+            flask.flash(f'Welcome, {username}!', 'success')
+            return flask.redirect(flask.url_for('admin.index'))  # Redirect to Flask-Admin or another page
+    
+    return flask.render_template('login.html', form=form)
 
-    # Beispiel Login, hängt vom Datenmodell ab
-
-    # user_id = flask.request.form["name"]
-    # password = flask.request.form["pw"]
-
-    # user = User.query.filter_by(id=user_id).first()
-
-    # if not user or not check_password_hash(user.password, password):
-    #     flask.flash("Please check your login details and try again.")
-    #     return "Bad Login"
-
-    # flask_login.login_user(user)
-    # logging.info("Successful login %r", user)
-
-    return # flask.redirect(flask.url_for()) <- hier dann landing page nach login eintragen
-
-
+  
 @auth.route("/logout")
 @flask_login.login_required
 def logout():
@@ -69,3 +67,5 @@ def access_with_api_key(func):
         # Redirect, error handling o.ä.
             return 405, "Not allowed"
     return wrapper
+
+
