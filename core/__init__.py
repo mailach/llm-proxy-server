@@ -7,10 +7,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from wtforms import StringField
+
 import flask_login
 
 
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.security import generate_password_hash
+
 from logging.config import dictConfig
 
 with open("config/logging_config.json", "r") as f:
@@ -34,6 +38,7 @@ PG_PORT = os.environ.get("POSTGRES_PORT")
 # Falls die Anwendung hinter einem Proxy mit Pfadweiterleitung läuft
 PROXY_PATH_PREFIX = os.environ.get("PROXY_PATH_PREFIX")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 # Falls sachen nur in dev laufen sollen 
 STAGE = os.environ.get("STAGE")
 
@@ -63,21 +68,32 @@ def create_app():
     with app.app_context():
         
         
-        from core import models
+        from core.models import User
         from core.blueprints.root import root
         from core.blueprints.auth import auth
-        from core.models import User
+        
+        
+
         
         
     class UserModelView(ModelView):
-        can_delete = False  # disable model deletion
         page_size = 50 
         can_view_details = True
         column_list = (User.id, User.pw_hash)
+        form_columns = ('id', 'pw_hash')
+        
+        form_extra_fields = {
+        'id': StringField('ID')
+         }
+        
+        def is_accessible(self):
+            return True
 
+        def on_model_change(self, form, model, is_created):
+            if model.pw_hash:
+                model.pw_hash = generate_password_hash(model.pw_hash)
         
     admin.add_view(UserModelView(User, db.session))
-        #from core.blueprints.admin import admin
 
     login_manager.init_app(app)
 
