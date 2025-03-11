@@ -8,6 +8,7 @@ import flask
 
 root = flask.Blueprint("root", __name__)
 
-@root.route("/")
-def index():
-    return flask.render_template("hellow_world.html")
+
+@root.route('/')
+def home():
+    return flask.redirect(flask.url_for('admin.index'))

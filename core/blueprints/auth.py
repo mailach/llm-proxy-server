@@ -16,13 +16,12 @@ auth = flask.Blueprint("auth", __name__)
 
 @login_manager.user_loader
 def user_loader(user_id):
-    return # User.query.filter_by(id=user_id).first() <- abhängig vom Datenmodell
+    return User.query.filter_by(id=user_id).first()
 
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return # flask.redirect(flask.url_for("auth.login", next=flask.request.endpoint)) <- Weiterleitung wenn auf unberechtigte Seite zugegriffen wird
-
+    return flask.redirect(flask.url_for("auth.login", next=flask.request.endpoint)) 
 
 
 
@@ -40,7 +39,7 @@ def login():
             flask_login.login_user(user)
             logging.info("Successful login %r", user)
             flask.flash(f'Welcome, {username}!', 'success')
-            return flask.redirect(flask.url_for('admin.index'))  # Redirect to Flask-Admin or another page
+            return flask.redirect(flask.url_for('root.home'))  # Redirect to Flask-Admin or another page
     
     return flask.render_template('login.html', form=form)
 

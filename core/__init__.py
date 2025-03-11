@@ -56,25 +56,23 @@ def create_app():
         app.wsgi_app = ProxyFix(app.wsgi_app)
         
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
-    admin = Admin(app, name='LLM Proxy', template_mode='bootstrap4', url="/")
     
 
     with app.app_context():
         
         
-        from core.admin import UserModelView
+        from core.admin import RestrictedIndexView, UserModelView
         from core.models import User
-        from core.blueprints.root import root
         from core.blueprints.auth import auth
-    
+        from core.blueprints.root import root
         
+    admin = Admin(app, name='LLM Proxy', template_mode='bootstrap4', url="/", index_view=RestrictedIndexView())
     admin.add_view(UserModelView(User, db.session))
     
     login_manager.init_app(app)
 
     # Register imported blueprints
-    app.register_blueprint(root)
     app.register_blueprint(auth)
-    #app.register_blueprint(admin)
+    app.register_blueprint(root)
 
     return app

@@ -1,12 +1,31 @@
+import logging
+import flask
 from functools import wraps
+from flask_admin import AdminIndexView
 from flask_admin.contrib.sqla import ModelView
+from flask_login import current_user
 from wtforms import StringField
 from werkzeug.security import generate_password_hash
 
 from core.models import User
 
+class RestrtrictedAdminView:
+    def is_accessible(self):
+        return current_user.id =="admin"  
 
-class UserModelView(ModelView):
+    def inaccessible_callback(self, name, **kwargs):
+        return flask.redirect(flask.url_for('auth.login')) 
+
+
+class RestrictedIndexView(AdminIndexView):
+    
+    def is_accessible(self):
+        return current_user.is_authenticated 
+    
+    def inaccessible_callback(self, name, **kwargs):
+        return flask.redirect(flask.url_for('auth.login')) 
+
+class UserModelView(RestrtrictedAdminView, ModelView):
         page_size = 50 
         can_view_details = True
         column_list = (User.id, User.pw_hash)
@@ -16,13 +35,11 @@ class UserModelView(ModelView):
         'id': StringField('ID')
          }
         
-        def is_accessible(self):
-            return True
+        
 
         def on_model_change(self, form, model, is_created):
             if model.pw_hash:
                 model.pw_hash = generate_password_hash(model.pw_hash)
-
 
 
 
