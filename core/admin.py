@@ -1,4 +1,3 @@
-import logging
 import flask
 from functools import wraps
 from flask_admin import AdminIndexView
@@ -18,12 +17,16 @@ class RestrtrictedAdminView:
 
 
 class RestrictedIndexView(AdminIndexView):
+    def __init__(self, **kwargs):
+        super().__init__(url="/", **kwargs) 
     
     def is_accessible(self):
         return current_user.is_authenticated 
     
     def inaccessible_callback(self, name, **kwargs):
         return flask.redirect(flask.url_for('auth.login')) 
+    
+
 
 class UserModelView(RestrtrictedAdminView, ModelView):
         page_size = 50 

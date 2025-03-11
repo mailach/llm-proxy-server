@@ -66,7 +66,7 @@ def create_app():
         from core.blueprints.auth import auth
         from core.blueprints.root import root
         
-    admin = Admin(app, name='LLM Proxy', template_mode='bootstrap4', url="/", index_view=RestrictedIndexView())
+    admin = Admin(app, name='LLM Proxy', template_mode='bootstrap4', index_view=RestrictedIndexView())
     admin.add_view(UserModelView(User, db.session))
     
     login_manager.init_app(app)
