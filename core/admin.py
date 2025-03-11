@@ -29,20 +29,20 @@ class RestrictedIndexView(AdminIndexView):
 
 
 class UserModelView(RestrtrictedAdminView, ModelView):
-        page_size = 50 
-        can_view_details = True
-        column_list = (User.id, User.pw_hash)
-        form_columns = ('id', 'pw_hash')
-        
-        form_extra_fields = {
-        'id': StringField('ID')
-         }
-        
-        
+    page_size = 50
+    can_view_details = True
+    column_list = (User.id, User.pw_hash)
+    
+    form_columns = ('id', 'password')  
+    
+    form_extra_fields = {
+        'id': StringField('ID'),
+        'password': StringField('Password')  
+    }
 
-        def on_model_change(self, form, model, is_created):
-            if model.pw_hash:
-                model.pw_hash = generate_password_hash(model.pw_hash)
+    def on_model_change(self, form, model, is_created):
+        if form.password.data:  
+            model.pw_hash = generate_password_hash(form.password.data)
 
 
 
