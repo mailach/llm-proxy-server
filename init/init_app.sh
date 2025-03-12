@@ -1,3 +1,3 @@
 #!/bin/bash
 flask db upgrade
-SCRIPT_NAME=/path_to_app gunicorn --config config/gunicorn_config.py wsgi:app
+SCRIPT_NAME=/sws-llm-proxy gunicorn --config config/gunicorn_config.py wsgi:app
