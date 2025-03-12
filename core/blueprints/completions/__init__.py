@@ -25,9 +25,9 @@ def count_tokens(messages):
     return num_tokens
 
 
-def stream_completion(user, **kwargs):
-    num_tokens = count_tokens(kwargs["messages"])
-    model = kwargs["model"]
+def stream_completion(**kwargs):
+    # num_tokens = count_tokens(kwargs["messages"])
+    # model = kwargs["model"]
     try:
         client = OpenAI()
         completion_generator = client.chat.completions.create(**kwargs)
@@ -40,7 +40,7 @@ def stream_completion(user, **kwargs):
 
             if event.choices[0].finish_reason:
                 pass# save_num_tokens(model, num_tokens, user.id)
-            num_tokens +=1
+            # num_tokens +=1
             yield str(event.dict())
     except Exception as e:
         err_id = str(uuid.uuid4())
@@ -50,24 +50,24 @@ def stream_completion(user, **kwargs):
         
     
 
-def chunk_completion(user, **kwargs):
-    model = kwargs["model"]
-    try:
-        client = OpenAI()
-        answer = client.chat.completions.create(**kwargs)
-        logging.error(answer)
+# def chunk_completion(user, **kwargs):
+#     model = kwargs["model"]
+#     try:
+#         client = OpenAI()
+#         answer = client.chat.completions.create(**kwargs)
+#         logging.error(answer)
 
-    except Exception as e:
-        return {"OpenAI Error": repr(e)}
+#     except Exception as e:
+#         return {"OpenAI Error": repr(e)}
 
-    try:
-        pass #save_num_tokens(model, answer.usage.total_tokens, user.id)
+#     try:
+#         pass #save_num_tokens(model, answer.usage.total_tokens, user.id)
         
-        return answer.dict()
-    except Exception as e:
-        err_id = str(uuid.uuid4())
-        logging.error({"id": err_id, "exception": e, "location": "Saving number of tokens chunk"})
-        return {"Error": str(e) + " --- If reoccuring, contact TA with id " + err_id}
+#         return answer.dict()
+#     except Exception as e:
+#         err_id = str(uuid.uuid4())
+#         logging.error({"id": err_id, "exception": e, "location": "Saving number of tokens chunk"})
+#         return {"Error": str(e) + " --- If reoccuring, contact TA with id " + err_id}
     
         
 
@@ -82,20 +82,41 @@ def chunk_completion(user, **kwargs):
 #     increase_used_budget(price, num, user)
 
     
+    
+
+def chunk_completion(**kwargs):
+    # model = kwargs["model"]
+    try:
+        client = OpenAI()
+        answer = client.chat.completions.create(**kwargs)
+        logging.info(answer)
+
+    except Exception as e:
+        return {"OpenAI Error": repr(e)}
+
+    try:
+        #save_num_tokens(model, answer.usage.total_tokens, user.id)
+        
+        return answer.dict()
+    except Exception as e:
+        err_id = str(uuid.uuid4())
+        logging.error({"id": err_id, "exception": e, "location": "Saving number of tokens chunk"})
+        return {"Error": str(e) + " --- If reoccuring, contact TA with id " + err_id}
 
 
 @completions.route("/chat/completions", methods=["GET", "POST"])
 # @api_key_required
 # @user_has_budget
 # @validate_json_body
-def chat_chat_completion():
-        raise NotImplementedError("Method not implemented yet")
-        # data = flask.request.json
+def chat_completion():
+        data = flask.request.json
+        logging.info(data)
         # if  data["model"] not in MODELS:
         #     return {"Error": "Please specify a supported model: " + str(MODELS)}
 
-        # if "stream" in data and data["stream"]:
-        #     return stream_completion(user=user, **data)
-        # else:
-        #     return chunk_completion(user=user, **data)
+        if "stream" in data and data["stream"]:
+            return stream_completion(**data)
+        else:
+            return chunk_completion(**data)
+        
 
