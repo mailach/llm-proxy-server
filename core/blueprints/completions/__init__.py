@@ -4,13 +4,17 @@ import flask
 from flask import current_app
 import tiktoken
 import uuid
+from functools import wraps
+
 
 from openai import OpenAI
 from core.blueprints.auth import api_key_and_budget_required
 from core.models import User, LanguageModel
+from core.blueprints.completions._request_schema_validation import validate_json_body
 
 completions = flask.Blueprint("completion", __name__)
 ENCODER = tiktoken.get_encoding("cl100k_base")
+
 
 
 
@@ -81,8 +85,8 @@ def chunk_completion(user, lm, **kwargs):
 
 
 @completions.route("/chat/completions", methods=["GET", "POST"])
+@validate_json_body
 @api_key_and_budget_required
-# @validate_json_body
 def chat_completion(user):
         data = flask.request.json
         
