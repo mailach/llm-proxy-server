@@ -59,7 +59,7 @@ def _extract_api_key(header):
     
     
 
-def api_key_required(f):
+def api_key_and_budget_required(f):
    @wraps(f)
    def decorator(*args, **kwargs):
     api_key = None
@@ -71,6 +71,9 @@ def api_key_required(f):
 
     if not user:
         return 'Invalid token'
+    
+    if user.used_budget >= user.budget:
+        return 'No budget left'
 
     return f(user, *args, **kwargs)
    

@@ -1,10 +1,12 @@
 import logging
+import traceback
 import flask
 import tiktoken
 import uuid
 
 from openai import OpenAI
-from core.blueprints.auth import api_key_required
+from core.blueprints.auth import api_key_and_budget_required
+from core.models import User, LanguageModel
 
 completions = flask.Blueprint("completion", __name__)
 ENCODER = tiktoken.get_encoding("cl100k_base")
@@ -48,77 +50,55 @@ def stream_completion(**kwargs):
         logging.error({"id": err_id, "exception": e, "location": "Saving number of tokens chunk"})
         yield str({"Error": str(e) + " --- If reoccuring, contact TA with id " + err_id})
     
-        
+
+
+def _change_user_budget(model, input_tokens, output_tokens, user):
     
-
-# def chunk_completion(user, **kwargs):
-#     model = kwargs["model"]
-#     try:
-#         client = OpenAI()
-#         answer = client.chat.completions.create(**kwargs)
-#         logging.error(answer)
-
-#     except Exception as e:
-#         return {"OpenAI Error": repr(e)}
-
-#     try:
-#         pass #save_num_tokens(model, answer.usage.total_tokens, user.id)
-        
-#         return answer.dict()
-#     except Exception as e:
-#         err_id = str(uuid.uuid4())
-#         logging.error({"id": err_id, "exception": e, "location": "Saving number of tokens chunk"})
-#         return {"Error": str(e) + " --- If reoccuring, contact TA with id " + err_id}
+    input_price = input_tokens * (model.price_input_token/1_000_000)
+    output_price = output_tokens * (model.price_output_token/1_000_000)
     
-        
-
-
-
-
-# def save_num_tokens(model, num, user):
-#     logging.error("NUMBER OF TOKENS IN THIS STREAM:  " + str(num) + model)
-#     price = get_price_per_token(model)
-
+    user.used_budget += input_price + output_price
+    user.save()
     
-#     increase_used_budget(price, num, user)
 
     
     
 
-def chunk_completion(**kwargs):
-    # model = kwargs["model"]
+def chunk_completion(user, lm, **kwargs):
     try:
         client = OpenAI()
         answer = client.chat.completions.create(**kwargs)
         logging.info(answer)
 
     except Exception as e:
+        
         return {"OpenAI Error": repr(e)}
 
-    try:
-        #save_num_tokens(model, answer.usage.total_tokens, user.id)
-        
-        return answer.dict()
-    except Exception as e:
-        err_id = str(uuid.uuid4())
-        logging.error({"id": err_id, "exception": e, "location": "Saving number of tokens chunk"})
-        return {"Error": str(e) + " --- If reoccuring, contact TA with id " + err_id}
+    _change_user_budget(lm, answer.usage.prompt_tokens, answer.usage.completion_tokens, user)
+    return answer.dict()
+    
 
 
 @completions.route("/chat/completions", methods=["GET", "POST"])
-@api_key_required
-# @user_has_budget
+@api_key_and_budget_required
 # @validate_json_body
 def chat_completion(user):
         data = flask.request.json
-        logging.info(data)
-        logging.info(user)
-        # if  data["model"] not in MODELS:
-        #     return {"Error": "Please specify a supported model: " + str(MODELS)}
-
-        if "stream" in data and data["stream"]:
-            return stream_completion(**data)
-        else:
-            return chunk_completion(**data)
+        
+        lm = LanguageModel.query.get(data["model"])
+        if not lm:
+             return {"Error": "Chosen model not supported"}
+         
+        try: 
+            if "stream" in data and data["stream"]:
+                return stream_completion(**data)
+            else:
+                return chunk_completion(user, lm, **data)
+        
+        except Exception as e:
+            err_id = str(uuid.uuid4())
+            tb = traceback.extract_tb(e.__traceback__)[-1]
+            logging.error({"id": err_id, "exception": e, "location": f"{tb.filename}:{tb.lineno} in {tb.name}"})
+            return {"Error": str(e) + " --- If reoccuring, contact TA with id " + err_id}
         
 
