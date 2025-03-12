@@ -37,8 +37,6 @@ def login():
             flask.flash("Please check your login details and try again.", "danger")
         else:
             flask_login.login_user(user)
-            logging.info("Successful login %r", user)
-            flask.flash(f'Welcome, {username}!', 'success')
             return flask.redirect('/')  
     
     return flask.render_template('login.html', form=form)
