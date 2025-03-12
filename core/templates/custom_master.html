@@ -1,7 +1,7 @@
 {% extends 'admin/master.html' %}
 
 {% block brand %}
-    <a class="navbar-brand" href="{{ url_for('admin.index') }}">SWS LLM Self-Service</a>
+    <a class="navbar-brand" href="{{ config["PROXY_PATH_PREFIX"]}}/">SWS LLM Self-Service</a>
 {% endblock %}
 
 {% block access_control %}

@@ -47,6 +47,7 @@ def create_app():
         "SQLALCHEMY_DATABASE_URI"
     ] = f"postgresql://{PG_USER}:{PG_PW}@{PG_HOST}:{PG_PORT}/{PG_DB}"
     app.config['JSON_AS_ASCII'] = False
+    app.config["PROXY_PATH_PREFIX"] = PROXY_PATH_PREFIX
     
 
     app.secret_key = os.environ.get("FLASK_SECRET_KEY")

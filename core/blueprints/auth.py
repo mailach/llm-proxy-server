@@ -37,7 +37,7 @@ def login():
             flask.flash("Please check your login details and try again.", "danger")
         else:
             flask_login.login_user(user)
-            return flask.redirect('/')  
+            return flask.redirect(flask.url_for('admin.index'))  
     
     return flask.render_template('login.html', form=form)
 
