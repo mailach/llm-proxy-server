@@ -4,6 +4,7 @@ import tiktoken
 import uuid
 
 from openai import OpenAI
+from core.blueprints.auth import api_key_required
 
 completions = flask.Blueprint("completion", __name__)
 ENCODER = tiktoken.get_encoding("cl100k_base")
@@ -105,12 +106,13 @@ def chunk_completion(**kwargs):
 
 
 @completions.route("/chat/completions", methods=["GET", "POST"])
-# @api_key_required
+@api_key_required
 # @user_has_budget
 # @validate_json_body
-def chat_completion():
+def chat_completion(user):
         data = flask.request.json
         logging.info(data)
+        logging.info(user)
         # if  data["model"] not in MODELS:
         #     return {"Error": "Please specify a supported model: " + str(MODELS)}
 

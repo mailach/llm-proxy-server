@@ -39,7 +39,7 @@ def login():
             flask_login.login_user(user)
             logging.info("Successful login %r", user)
             flask.flash(f'Welcome, {username}!', 'success')
-            return flask.redirect('/')  # Redirect to Flask-Admin or another page
+            return flask.redirect('/')  
     
     return flask.render_template('login.html', form=form)
 
@@ -48,23 +48,32 @@ def login():
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
-    return # flask.redirect(flask.url_for("auth.login")) <- redirect nach logout
+    return flask.redirect(flask.url_for("auth.login")) 
 
 
+def _extract_api_key(header):
+    if not header:
+        return 'No api-key passed in the Authorization header'
+    
+    return header.replace("Bearer", "")
+    
+    
 
+def api_key_required(f):
+   @wraps(f)
+   def decorator(*args, **kwargs):
+    api_key = None
 
-# Decorator um Endpunkte nur mit API access zugänglich zu machen
-def access_with_api_key(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        # hier die Logik programmieren wie API keys authorisiert werden. 
-        # if erfolgreiche authorisierung: 
-        api_key_valid = True
-        if api_key_valid: 
-            return func(*args, **kwargs)
-        else:
-        # Redirect, error handling o.ä.
-            return 405, "Not allowed"
-    return wrapper
+    if 'Authorization' in flask.request.headers:
+        api_key = _extract_api_key(flask.request.headers['Authorization'])
+
+    user = User.query.filter_by(api_key=api_key.strip()).first()
+
+    if not user:
+        return 'Invalid token'
+
+    return f(user, *args, **kwargs)
+   
+   return decorator
 
 
