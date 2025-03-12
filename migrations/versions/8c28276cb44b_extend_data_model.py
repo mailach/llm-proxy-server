@@ -7,6 +7,8 @@ Create Date: 2025-03-12 12:20:03.468548
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.sql import text
+
 
 
 # revision identifiers, used by Alembic.
@@ -39,6 +41,26 @@ def upgrade():
                type_=sa.String(length=400),
                existing_nullable=True)
 
+
+    conn = op.get_bind()
+    
+    
+    query = text("""
+        UPDATE "user"
+        SET api_key = :api_key, 
+            budget = :budget, 
+            used_budget = :used_budget
+        WHERE id = :user_id
+    """)
+
+    params = {
+        "api_key": "5540d589-2d17-4606-86c9-f6e0e95e0945",
+        "budget": 5,
+        "used_budget": 0,
+        "user_id": "admin"
+    }
+
+    conn.execute(query, params)
     # ### end Alembic commands ###
 
 

@@ -11,7 +11,7 @@ data = {
   "response_format":{"type": "json_object"}
 }
 url = "http://127.0.0.1:5000/chat/completions"
-api_key = '4ac8b05c-86f1-4ae5-b559-2339cb39ad81'
+api_key = '5540d589-2d17-4606-86c9-f6e0e95e0945'
 
 req = requests.post(url, headers={'Authorization': "Bearer " + api_key}, json=data)
 print(req.text)
