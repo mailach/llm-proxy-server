@@ -39,7 +39,7 @@ def login():
             flask_login.login_user(user)
             logging.info("Successful login %r", user)
             flask.flash(f'Welcome, {username}!', 'success')
-            return flask.redirect(flask.url_for('root.home'))  # Redirect to Flask-Admin or another page
+            return flask.redirect('/')  # Redirect to Flask-Admin or another page
     
     return flask.render_template('login.html', form=form)
 

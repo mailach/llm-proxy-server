@@ -64,7 +64,6 @@ def create_app():
         from core.admin import RestrictedIndexView, UserModelView
         from core.models import User
         from core.blueprints.auth import auth
-        from core.blueprints.root import root
         from core.blueprints.completions import completions
         
     admin = Admin(app, name='LLM Proxy', template_mode='bootstrap4', index_view=RestrictedIndexView())
@@ -74,7 +73,6 @@ def create_app():
 
     # Register imported blueprints
     app.register_blueprint(auth)
-    app.register_blueprint(root)
     app.register_blueprint(completions)
 
     return app
