@@ -3,7 +3,7 @@ from functools import wraps
 
 import flask
 import flask_login
-
+import uuid
 from werkzeug.security import check_password_hash 
 
 from core import login_manager
@@ -57,7 +57,16 @@ def _extract_api_key(header):
     
     return header.replace("Bearer", "")
     
-    
+
+@auth.route('/update_api_key', methods=['POST'])
+@flask_login.login_required
+def update_api_key():
+    new_api_key = uuid.uuid4()
+    user = flask_login.current_user
+    user.api_key = new_api_key 
+    user.save()
+    return flask.jsonify(success=True, api_key=new_api_key)
+
 
 def api_key_and_budget_required(f):
    @wraps(f)

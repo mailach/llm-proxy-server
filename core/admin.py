@@ -1,7 +1,7 @@
 import flask
 import uuid
 from functools import wraps
-from flask_admin import AdminIndexView
+from flask_admin import AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
 from wtforms import StringField, FloatField
@@ -22,6 +22,12 @@ class RestrtrictedAdminView:
 class RestrictedIndexView(AdminIndexView):
     def __init__(self, **kwargs):
         super().__init__(url="/", **kwargs) 
+        
+    @expose('/')
+    def index(self):
+        completion_models = [u.__dict__ for u in LanguageModel.query.all()]
+
+        return self.render('home.html', username=current_user.id, budget=current_user.budget, used_budget=current_user.used_budget, api_key=current_user.api_key, completion_models=completion_models)
     
     def is_accessible(self):
         return current_user.is_authenticated 
