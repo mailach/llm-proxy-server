@@ -7,7 +7,7 @@ from flask_login import current_user
 from wtforms import StringField, FloatField
 from werkzeug.security import generate_password_hash
 
-from core.models import User
+from core.models import User, LanguageModel
 
 class RestrtrictedAdminView:
     def is_accessible(self):
@@ -57,7 +57,21 @@ class UserModelView(RestrtrictedAdminView, ModelView):
         
 
 
-
+class LanguageModelView(RestrtrictedAdminView, ModelView):
+    page_size = 50
+    can_view_details = True
+    can_edit = True
+    column_list = (LanguageModel.name, LanguageModel.encoding_model, LanguageModel.provider, LanguageModel.price_input_token, LanguageModel.price_output_token )
+    
+    form_columns = ('name', 'encoding_model', 'provider', 'price_input_token', 'price_output_token')  
+    
+    form_extra_fields = {
+        'name': StringField('Name'),
+        'encoding_model': StringField('Encoding model'),  
+        'provider': StringField('Provider'),
+        'price_input_token': FloatField('Pricing 1M input token'),
+        'price_output_token': FloatField('Pricing 1M output token')
+    }
 
 
 # Decorator um Endpunkte nur für Admins zugänglich zu machen

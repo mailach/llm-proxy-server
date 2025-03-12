@@ -61,13 +61,14 @@ def create_app():
     with app.app_context():
         
         
-        from core.admin import RestrictedIndexView, UserModelView
-        from core.models import User
+        from core.admin import RestrictedIndexView, UserModelView, LanguageModelView
+        from core.models import User, LanguageModel
         from core.blueprints.auth import auth
         from core.blueprints.completions import completions
         
     admin = Admin(app, name='LLM Proxy', template_mode='bootstrap4', index_view=RestrictedIndexView())
     admin.add_view(UserModelView(User, db.session))
+    admin.add_view(LanguageModelView(LanguageModel, db.session))
     
     login_manager.init_app(app)
 
