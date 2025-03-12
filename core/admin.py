@@ -1,9 +1,10 @@
 import flask
+import uuid
 from functools import wraps
 from flask_admin import AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
-from wtforms import StringField
+from wtforms import StringField, FloatField
 from werkzeug.security import generate_password_hash
 
 from core.models import User
@@ -31,18 +32,29 @@ class RestrictedIndexView(AdminIndexView):
 class UserModelView(RestrtrictedAdminView, ModelView):
     page_size = 50
     can_view_details = True
-    column_list = (User.id, User.pw_hash)
+    can_edit = True
+    column_list = (User.id, User.budget, User.used_budget, User.api_key)
     
-    form_columns = ('id', 'password')  
+    form_columns = ('id', 'password', 'budget', 'used_budget')  
     
     form_extra_fields = {
         'id': StringField('ID'),
-        'password': StringField('Password')  
+        'password': StringField('Password'),  
+        'budget': FloatField('Budget'),
+        'used_budget': FloatField('Used budget')
     }
+    
 
     def on_model_change(self, form, model, is_created):
         if form.password.data:  
             model.pw_hash = generate_password_hash(form.password.data)
+            
+        if is_created:
+            model.api_key = uuid.uuid4()
+        else:
+            model.id = model.id
+            
+        
 
 
 
