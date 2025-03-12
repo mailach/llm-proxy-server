@@ -8,7 +8,7 @@ Create Date: 2025-03-12 12:20:03.468548
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.sql import text
-
+import os 
 
 
 # revision identifiers, used by Alembic.
@@ -45,6 +45,7 @@ def upgrade():
     conn = op.get_bind()
     
     
+    
     query = text("""
         UPDATE "user"
         SET api_key = :api_key, 
@@ -54,7 +55,7 @@ def upgrade():
     """)
 
     params = {
-        "api_key": "5540d589-2d17-4606-86c9-f6e0e95e0945",
+        "api_key": os.environ.get("ADMIN_API_KEY"),
         "budget": 5,
         "used_budget": 0,
         "user_id": "admin"

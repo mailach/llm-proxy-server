@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 
 data = {
   "model" : "gpt-4o-mini-2024-07-18",  
@@ -11,7 +12,7 @@ data = {
   "response_format":{"type": "json_object"}
 }
 url = "http://127.0.0.1:5000/chat/completions"
-api_key = '5540d589-2d17-4606-86c9-f6e0e95e0945'
+api_key = os.environ.get("ADMIN_API_KEY")
 
 req = requests.post(url, headers={'Authorization': "Bearer " + api_key}, json=data)
 print(req.text)
