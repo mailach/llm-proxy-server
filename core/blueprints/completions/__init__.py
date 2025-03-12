@@ -1,6 +1,7 @@
 import logging
 import traceback
 import flask
+from flask import current_app
 import tiktoken
 import uuid
 
@@ -28,27 +29,30 @@ def count_tokens(messages):
     return num_tokens
 
 
-def stream_completion(**kwargs):
-    # num_tokens = count_tokens(kwargs["messages"])
-    # model = kwargs["model"]
-    try:
-        client = OpenAI()
-        completion_generator = client.chat.completions.create(**kwargs)
-    except Exception as e:
-        yield str({"OpenAI Error": repr(e)})
-        return
+def stream_completion(app, user, lm, **kwargs):
+    input_tokens = count_tokens(kwargs["messages"])
+    output_tokens = 0
+    
 
-    try:
+    with app.app_context(): 
+        try:
+            client = OpenAI()
+            completion_generator = client.chat.completions.create(**kwargs)
+            
+        except Exception as e:
+            yield str({"OpenAI Error": repr(e)})
+            return    
+
         for event in completion_generator:
 
-            if event.choices[0].finish_reason:
-                pass# save_num_tokens(model, num_tokens, user.id)
-            # num_tokens +=1
+            if event.choices[0].finish_reason:    
+                _change_user_budget(lm, input_tokens, output_tokens, user)
+                logging.info(input_tokens)
+                logging.info(output_tokens)
+                
+            output_tokens +=1
             yield str(event.dict())
-    except Exception as e:
-        err_id = str(uuid.uuid4())
-        logging.error({"id": err_id, "exception": e, "location": "Saving number of tokens chunk"})
-        yield str({"Error": str(e) + " --- If reoccuring, contact TA with id " + err_id})
+
     
 
 
@@ -59,9 +63,7 @@ def _change_user_budget(model, input_tokens, output_tokens, user):
     
     user.used_budget += input_price + output_price
     user.save()
-    
-
-    
+       
     
 
 def chunk_completion(user, lm, **kwargs):
@@ -71,7 +73,6 @@ def chunk_completion(user, lm, **kwargs):
         logging.info(answer)
 
     except Exception as e:
-        
         return {"OpenAI Error": repr(e)}
 
     _change_user_budget(lm, answer.usage.prompt_tokens, answer.usage.completion_tokens, user)
@@ -91,7 +92,8 @@ def chat_completion(user):
          
         try: 
             if "stream" in data and data["stream"]:
-                return stream_completion(**data)
+                app = current_app._get_current_object()
+                return stream_completion(app, user, lm, **data)
             else:
                 return chunk_completion(user, lm, **data)
         
