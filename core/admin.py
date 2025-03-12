@@ -29,11 +29,17 @@ class RestrictedIndexView(AdminIndexView):
 
         return self.render('home.html', username=current_user.id, budget=current_user.budget, used_budget=current_user.used_budget, api_key=current_user.api_key, completion_models=completion_models)
     
+    def is_visible(self):
+        return False
+    
+    
     def is_accessible(self):
         return current_user.is_authenticated 
     
     def inaccessible_callback(self, name, **kwargs):
         return flask.redirect(flask.url_for('auth.login')) 
+    
+    
     
 
 
