@@ -95,19 +95,6 @@ class LanguageModelView(RestrtrictedAdminView, ModelView):
             model.id = model.id
 
 
-# Decorator um Endpunkte nur für Admins zugänglich zu machen
-def access_only_admin(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
 
-        # Logik um zu überprüfen ob aktueller User Adminrechte hat (dummy code)
-        current_user_admin = True 
-        if current_user_admin:
-            return func(*args, **kwargs)
-        else:
-        # Redirect, error handling o.ä.
-            return 405, "Not allowed"
-
-    return wrapper
 
 
