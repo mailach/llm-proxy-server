@@ -5,6 +5,8 @@ from flask_admin import AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
 from wtforms import StringField, FloatField
+from wtforms.validators import InputRequired
+
 from werkzeug.security import generate_password_hash
 
 from core.models import User, LanguageModel
@@ -38,10 +40,10 @@ class UserModelView(RestrtrictedAdminView, ModelView):
     form_columns = ('id', 'password', 'budget', 'used_budget')  
     
     form_extra_fields = {
-        'id': StringField('ID'),
+        'id': StringField('ID', validators=[InputRequired()]),
         'password': StringField('Password'),  
-        'budget': FloatField('Budget'),
-        'used_budget': FloatField('Used budget')
+        'budget': FloatField('Budget', validators=[InputRequired()], default=5),
+        'used_budget': FloatField('Used budget', default=0)
     }
     
 
@@ -66,12 +68,19 @@ class LanguageModelView(RestrtrictedAdminView, ModelView):
     form_columns = ('name', 'encoding_model', 'provider', 'price_input_token', 'price_output_token')  
     
     form_extra_fields = {
-        'name': StringField('Name'),
-        'encoding_model': StringField('Encoding model'),  
-        'provider': StringField('Provider'),
-        'price_input_token': FloatField('Pricing 1M input token'),
-        'price_output_token': FloatField('Pricing 1M output token')
+        'name': StringField('Name', validators=[InputRequired()]),
+        'encoding_model': StringField('Encoding model', validators=[InputRequired()]),  
+        'provider': StringField('Provider', validators=[InputRequired()]),
+        'price_input_token': FloatField('Pricing 1M input token ($)', validators=[InputRequired()], default=0),
+        'price_output_token': FloatField('Pricing 1M output token ($)', validators=[InputRequired()], default=0)
     }
+    
+    def on_model_change(self, form, model, is_created):
+            
+        if is_created:
+            model.api_key = uuid.uuid4()
+        else:
+            model.id = model.id
 
 
 # Decorator um Endpunkte nur für Admins zugänglich zu machen
