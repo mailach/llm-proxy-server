@@ -66,7 +66,7 @@ def create_app():
         from core.blueprints.auth import auth
         from core.blueprints.completions import completions
         
-    admin = Admin(app, name='LLM Proxy', template_mode='bootstrap4', index_view=RestrictedIndexView())
+    admin = Admin(app, name='SWS LLM Self-Service', template_mode='bootstrap4', index_view=RestrictedIndexView())
     admin.add_view(UserModelView(User, db.session))
     admin.add_view(LanguageModelView(LanguageModel, db.session))
     
